@@ -4,6 +4,7 @@ const form = document.getElementById('item-form'); // querySelector() would also
 const input = document.getElementById('item-input');
 const itemList = document.getElementById('item-list');
 const button = document.querySelector('button'); // Add a feature to make the button dynamic when mouseover and click events happen.
+const clearButton = document.getElementById('clear');
 
 // Functions
 
@@ -24,8 +25,10 @@ const addItem = (e) => {
   li.appendChild(button);
   itemList.appendChild(li);
   input.value = '';
-  console.log(li);
+  // console.log(li);
 };
+
+// A separate function to create a button element - This makes it easier to reuse in other places. ↓
 
 function createButton(classes) {
   const button = document.createElement('button');
@@ -35,20 +38,42 @@ function createButton(classes) {
   return button;
 }
 
+// A separate function to create a button element - This makes it easier to reuse in other places. ↓
+
 function createIcon(classes) {
   const icon = document.createElement('i');
   icon.className = classes;
   return icon;
 }
 
+// A separate function to delete a button element - Using event delegation ↓
+function removeItem(e) {
+  // console.log(e.target.parentElement.classList);
+  if (e.target.parentElement.classList.contains('remove-item')) {
+    e.target.parentElement.parentElement.remove(); // THis goes to the paret element of remove-item (the actual list item, then delets that)
+  }
+}
+
+// Clear All items button function
+function clearAll() {
+  itemList.innerHTML = '';
+
+  // Other method:
+  // while (itemList.firstChild) {
+  //   itemList.removeChild(itemList.firstChild);
+  // }
+}
+
 // Event Listeners
 
 form.addEventListener('submit', addItem);
 
+itemList.addEventListener('click', removeItem);
+
+clearButton.addEventListener('click', clearAll);
+
 // button.addEventListener('click', createButton);
 
 // input.addEventListener("click", onInput);
-
-// itemist.addEventListener("click", onInteraction);
 
 // button.addEventListener("click", onClick);

@@ -1,3 +1,3 @@
 # Shopping List Application 
 
-A simpleshipping list app to help you keep track of your stocks.
+A simple shipping list app to help you keep track of your household needs.
