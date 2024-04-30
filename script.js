@@ -73,6 +73,21 @@ function clearAll() {
   checkUI();
 }
 
+// Make the filter form functional:
+function filterItems(e) {
+  const items = itemList.querySelectorAll('li');
+  const key = e.target.value.toLowerCase();
+
+  items.forEach((item) => {
+    const itemName = item.firstChild.textContent.toLowerCase();
+    if (itemName.indexOf(key) != -1) {
+      item.style.display = 'flex';
+    } else {
+      item.style.display = 'none';
+    }
+  });
+}
+
 // Making the page more dynamic by hiding certain features when the list is unpopulated
 
 function checkUI() {
@@ -87,7 +102,11 @@ function checkUI() {
   }
 }
 
+// Invoking necessary functions
+
 checkUI();
+
+// filterItems();
 
 // Event Listeners
 
@@ -96,6 +115,8 @@ form.addEventListener('submit', addItem);
 itemList.addEventListener('click', removeItem);
 
 clearButton.addEventListener('click', clearAll);
+
+filter.addEventListener('input', filterItems);
 
 // items.addEventListener('click', checkUI);
 
