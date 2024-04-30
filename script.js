@@ -5,6 +5,7 @@ const input = document.getElementById('item-input');
 const itemList = document.getElementById('item-list');
 const button = document.querySelector('button'); // Add a feature to make the button dynamic when mouseover and click events happen.
 const clearButton = document.getElementById('clear');
+const filter = document.getElementsByClassName('filter');
 
 // Functions
 
@@ -64,6 +65,18 @@ function clearAll() {
   // }
 }
 
+// Make Certain fields only appear when there is text / items in the list.
+
+function listPopulated(e) {
+  // onload(itemList === (item) ? filter.hide());
+  onload(
+    itemList === item
+      ? (filter.style.display = 'none')
+      : (filter.style.display = 'red')
+  );
+  // input.style.innerHTML.color = 'red';
+}
+
 // Event Listeners
 
 form.addEventListener('submit', addItem);
@@ -71,6 +84,8 @@ form.addEventListener('submit', addItem);
 itemList.addEventListener('click', removeItem);
 
 clearButton.addEventListener('click', clearAll);
+
+filter.addEventListener('click', listPopulated);
 
 // button.addEventListener('click', createButton);
 
