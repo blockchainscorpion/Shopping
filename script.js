@@ -13,24 +13,22 @@ const addItem = (e) => {
   e.preventDefault();
 
   const newItem = input.value;
-  const li = document.createElement('li');
-  const button = createButton('remove-item btn-link text-red');
 
   // Validate input
-  if (newItem.value === '') {
-    error('Add An item');
+  if (newItem === '') {
+    alert('Add An item');
     return;
-  } else {
-    li.appendChild(document.createTextNode(newItem));
-
-    li.appendChild(button);
-    // Adding list items to the page
-    itemList.appendChild(li);
   }
+  const li = document.createElement('li');
+  li.appendChild(document.createTextNode(newItem));
+
+  const button = createButton('remove-item btn-link text-red');
+  li.appendChild(button);
+  // Adding list items to the page
+  itemList.appendChild(li);
 
   checkUI();
   input.value = '';
-  // console.log(li);
 };
 
 // A separate function to create a button element - This makes it easier to reuse in other places. ↓
