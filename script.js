@@ -9,26 +9,45 @@ const filter = document.getElementById('filter');
 
 // Functions
 
-const addItem = (e) => {
+// Display the previously saved items on initial page load
+const displayItems = () => {
+  const itemsFromStorage = getItemFromStorage(); // Get the items from the local storage
+
+  itemsFromStorage.forEach((item) => addItemToDOM(item)); // Add any items from storage to the DOM
+
+  checkUI(); // Check if the list is empty or not
+};
+
+const onAddItemSubmit = (e) => {
   e.preventDefault();
 
-  const newItem = input.value;
+  const newItem = input.value; // Defining that the user input value = a new item.
 
   // Validate input
   if (newItem === '') {
     alert('Add An item');
     return;
   }
+
+  // Adding list items to the page as an individual element
+  addItemToDOM(newItem);
+  // Adding list items to the local storage (never add sensitive details to local storage)
+  addItemToStorage(newItem);
+
+  // Clear input
+  checkUI();
+  input.value = '';
+};
+
+const addItemToDOM = (item) => {
+  // Turned the add item functionality into a separate function, which is called in the initial function
   const li = document.createElement('li');
-  li.appendChild(document.createTextNode(newItem));
+  li.appendChild(document.createTextNode(item));
 
   const button = createButton('remove-item btn-link text-red');
   li.appendChild(button);
   // Adding list items to the page
   itemList.appendChild(li);
-
-  checkUI();
-  input.value = '';
 };
 
 // A separate function to create a button element - This makes it easier to reuse in other places. ↓
@@ -48,6 +67,29 @@ function createIcon(classes) {
   icon.className = classes;
   return icon;
 }
+
+const addItemToStorage = (item) => {
+  // Adding list items to the storage
+  const itemsFromStorage = getItemFromStorage();
+
+  // Add new item to array
+  itemsFromStorage.push(item);
+
+  // Convert it to a JSON string and set to local storage
+  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+};
+
+const getItemFromStorage = () => {
+  let itemsFromStorage;
+
+  if (localStorage.getItem('items') === null) {
+    itemsFromStorage = [];
+  } else {
+    itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+  }
+
+  return itemsFromStorage;
+};
 
 // A separate function to delete a button element - Using event delegation ↓
 function removeItem(e) {
@@ -102,26 +144,32 @@ function checkUI() {
   }
 }
 
-// Invoking necessary functions
+// Initialize app - A neater alternative to having the event listeners in the global scope.
 
-checkUI();
+const init = () => {
+  // Event Listeners
 
-// filterItems();
+  form.addEventListener('submit', onAddItemSubmit);
 
-// Event Listeners
+  itemList.addEventListener('click', removeItem);
 
-form.addEventListener('submit', addItem);
+  clearButton.addEventListener('click', clearAll);
 
-itemList.addEventListener('click', removeItem);
+  filter.addEventListener('input', filterItems);
 
-clearButton.addEventListener('click', clearAll);
+  document.addEventListener('DOMContentLoaded', displayItems);
 
-filter.addEventListener('input', filterItems);
+  checkUI();
 
-// items.addEventListener('click', checkUI);
+  // filterItems();
 
-// button.addEventListener('click', createButton);
+  // items.addEventListener('click', checkUI);
 
-// input.addEventListener("click", onInput);
+  // button.addEventListener('click', createButton);
 
-// button.addEventListener("click", onClick);
+  // input.addEventListener("click", onInput);
+
+  // button.addEventListener("click", onClick);
+};
+
+init();
