@@ -18,6 +18,7 @@ const displayItems = () => {
   checkUI(); // Check if the list is empty or not
 };
 
+// What to do when user click's submit/add item
 const onAddItemSubmit = (e) => {
   e.preventDefault();
 
@@ -39,6 +40,7 @@ const onAddItemSubmit = (e) => {
   input.value = '';
 };
 
+// Add items to the DOM (page)
 const addItemToDOM = (item) => {
   // Turned the add item functionality into a separate function, which is called in the initial function
   const li = document.createElement('li');
@@ -52,25 +54,25 @@ const addItemToDOM = (item) => {
 
 // A separate function to create a button element - This makes it easier to reuse in other places. ↓
 
-function createButton(classes) {
+const createButton = (classes) => {
   const button = document.createElement('button');
   button.className = classes;
   const icon = createIcon('fa-solid fa-xmark');
   button.appendChild(icon);
   return button;
-}
+};
 
 // A separate function to create a button element - This makes it easier to reuse in other places. ↓
 
-function createIcon(classes) {
+const createIcon = (classes) => {
   const icon = document.createElement('i');
   icon.className = classes;
   return icon;
-}
-
+};
+// Add items to local storage so they can be accessed in future sessions
 const addItemToStorage = (item) => {
   // Adding list items to the storage
-  const itemsFromStorage = getItemFromStorage();
+  let itemsFromStorage = getItemFromStorage();
 
   // Add new item to array
   itemsFromStorage.push(item);
@@ -79,29 +81,52 @@ const addItemToStorage = (item) => {
   localStorage.setItem('items', JSON.stringify(itemsFromStorage));
 };
 
+// Retreive previous session items from local storage
 const getItemFromStorage = () => {
   let itemsFromStorage;
 
   if (localStorage.getItem('items') === null) {
     itemsFromStorage = [];
   } else {
-    itemsFromStorage = JSON.parse(localStorage.getItem('items'));
+    itemsFromStorage = Object.values(JSON.parse(localStorage.getItem('items')));
   }
 
   return itemsFromStorage;
 };
 
-// A separate function to delete a button element - Using event delegation ↓
-function removeItem(e) {
-  // console.log(e.target.parentElement.classList);
-  if (e.target.parentElement.classList.contains('remove-item')) {
-    if (confirm('Are You Sure?') === true) {
-      e.target.parentElement.parentElement.remove(); // THis goes to the paret element of remove-item (the actual list item, then delets that)
+// (line 91): // Needs to be explicitly converted from an object to an array, otherwise gives an error saying : "script.js:16 Uncaught TypeError: itemsFromStorage.forEach is not a function at HTMLDocument.displayItems (script.js:16:20)"
 
-      checkUI();
-    }
+// What happens when the user clicks on the delete button for an individual item
+const onClickItem = (e) => {
+  if (e.target.parentElement.classList.contains('remove-item')) {
+    removeItem(e.target.parentElement.parentElement);
+  }
+};
+
+// A separate function to delete a button element - Using event delegation ↓
+function removeItem(item) {
+  if (confirm('Are You Sure???')) {
+    // Remove item from DOM / page
+    item.remove();
+
+    // Remove the item from local storage
+    removeItemFromStorage(item.textContent);
+
+    checkUI();
   }
 }
+
+const removeItemFromStorage = (item) => {
+  let itemsFromStorage = getItemFromStorage();
+
+  console.log(itemsFromStorage);
+
+  // Filter out the item that needs to be removed
+  itemsFromStorage = itemsFromStorage.filter((i) => i !== item);
+
+  // Create a new array and set to local storage data, overwriting the previous data
+  localStorage.setItem('items', JSON.stringify(itemsFromStorage));
+};
 
 // Clear All items button function
 function clearAll() {
@@ -111,6 +136,12 @@ function clearAll() {
   while (itemList.firstChild) {
     itemList.removeChild(itemList.firstChild);
   }
+
+  // Clear from local storage
+  // localStorage.clear(); // Removes ALL items from local storage. It works in this instance, but becareful in other instances where i may want to keep certain info in local storage.
+
+  // Removes the specific list items from local storage
+  localStorage.removeItem('items');
 
   checkUI();
 }
@@ -151,7 +182,8 @@ const init = () => {
 
   form.addEventListener('submit', onAddItemSubmit);
 
-  itemList.addEventListener('click', removeItem);
+  // itemList.addEventListener('click', removeItem);
+  itemList.addEventListener('click', onClickItem);
 
   clearButton.addEventListener('click', clearAll);
 
@@ -160,16 +192,6 @@ const init = () => {
   document.addEventListener('DOMContentLoaded', displayItems);
 
   checkUI();
-
-  // filterItems();
-
-  // items.addEventListener('click', checkUI);
-
-  // button.addEventListener('click', createButton);
-
-  // input.addEventListener("click", onInput);
-
-  // button.addEventListener("click", onClick);
 };
 
 init();
