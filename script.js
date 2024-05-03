@@ -104,7 +104,7 @@ const onClickItem = (e) => {
 };
 
 // A separate function to delete a button element - Using event delegation ↓
-function removeItem(item) {
+const removeItem = (item) => {
   if (confirm('Are You Sure???')) {
     // Remove item from DOM / page
     item.remove();
@@ -114,7 +114,7 @@ function removeItem(item) {
 
     checkUI();
   }
-}
+};
 
 const removeItemFromStorage = (item) => {
   let itemsFromStorage = getItemFromStorage();
@@ -129,7 +129,7 @@ const removeItemFromStorage = (item) => {
 };
 
 // Clear All items button function
-function clearAll() {
+const clearAll = () => {
   // itemList.innerHTML = '';
 
   // Other method:
@@ -144,10 +144,10 @@ function clearAll() {
   localStorage.removeItem('items');
 
   checkUI();
-}
+};
 
 // Make the filter form functional:
-function filterItems(e) {
+const filterItems = (e) => {
   const items = itemList.querySelectorAll('li');
   const key = e.target.value.toLowerCase();
 
@@ -159,11 +159,11 @@ function filterItems(e) {
       item.style.display = 'none';
     }
   });
-}
+};
 
 // Making the page more dynamic by hiding certain features when the list is unpopulated
 
-function checkUI() {
+const checkUI = () => {
   const items = itemList.querySelectorAll('li'); // If left in the global scope, it is unchangable and unaffected by this function because i've set it as a constant variable.
   // console.log(items);
   if (items.length === 0) {
@@ -173,7 +173,7 @@ function checkUI() {
     clearButton.style.display = 'block';
     filter.style.display = 'block';
   }
-}
+};
 
 // Initialize app - A neater alternative to having the event listeners in the global scope.
 
@@ -182,7 +182,6 @@ const init = () => {
 
   form.addEventListener('submit', onAddItemSubmit);
 
-  // itemList.addEventListener('click', removeItem);
   itemList.addEventListener('click', onClickItem);
 
   clearButton.addEventListener('click', clearAll);
