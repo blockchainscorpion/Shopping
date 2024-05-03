@@ -6,6 +6,8 @@ const itemList = document.getElementById('item-list');
 const button = document.getElementById('button'); // Add a feature to make the button dynamic when mouseover and click events happen.
 const clearButton = document.getElementById('clear');
 const filter = document.getElementById('filter');
+const formBtn = form.querySelector('button');
+let isEditMode = false;
 
 // Functions
 
@@ -100,7 +102,27 @@ const getItemFromStorage = () => {
 const onClickItem = (e) => {
   if (e.target.parentElement.classList.contains('remove-item')) {
     removeItem(e.target.parentElement.parentElement);
+  } else {
+    setItemToEdit(e.target);
   }
+};
+
+// A function to enable editing the items
+
+const setItemToEdit = (item) => {
+  isEditMode = true;
+
+  itemList
+    .querySelectorAll('li')
+    .forEach((item) => item.classList.remove('edit-mode')); // Ensures that only one item is in edit mode at a time
+
+  item.classList.add('edit-mode'); // Interacting directly with the css file to implement color changes onClick.
+
+  formBtn.innerHTML = '<i class="fa-solid fa-pen"></i> Update Item';
+
+  formBtn.style.backgroundColor = 'green';
+
+  input.value = item.textContent;
 };
 
 // A separate function to delete a button element - Using event delegation ↓

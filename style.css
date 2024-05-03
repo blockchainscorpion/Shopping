@@ -35,6 +35,10 @@ header h1 {
 }
 
 .edit-mode {
+  color: lightgrey;
+}
+
+.edit-mode {
   color: #ccc;
 }
 
