@@ -41,6 +41,11 @@ const onAddItemSubmit = (e) => {
     itemToEdit.classList.remove('edit-mode');
     itemToEdit.remove();
     isEditMode = false;
+  } else {
+    if (noDuplicate(newItem)) {
+      alert('That item is already on the list');
+      return;
+    }
   }
 
   // Adding list items to the page as an individual element
@@ -192,6 +197,13 @@ const filterItems = (e) => {
       item.style.display = 'none';
     }
   });
+};
+
+// Make sure there are no duplicate items
+const noDuplicate = (item) => {
+  const itemsFromStorage = getItemFromStorage();
+
+  return itemsFromStorage.includes(item);
 };
 
 // Making the page more dynamic by hiding certain features when the list is unpopulated
