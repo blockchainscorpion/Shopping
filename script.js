@@ -1,5 +1,5 @@
 // Collating all of the variables & Resources needed for the functionality of the form. This will make it easier to access them within multiple functions:
-// Create a function & button (itemsPurchased) that saves a list of the items purchased to a document/folder, and each month adds the items and their total price to an ipfs file.
+// Create a function & button (itemsPurchased) that prints a list of the items purchased to a documentthat can be downloaded.
 const form = document.getElementById('item-form'); // querySelector() would also work perfectly well.
 const input = document.getElementById('item-input');
 const itemList = document.getElementById('item-list');
@@ -17,7 +17,7 @@ const displayItems = () => {
 
   itemsFromStorage.forEach((item) => addItemToDOM(item)); // Add any items from storage to the DOM
 
-  checkUI(); // Check if the list is empty or not
+  resetUI(); // Check if the list is empty or not
 };
 
 // What to do when user click's submit/add item
@@ -32,13 +32,24 @@ const onAddItemSubmit = (e) => {
     return;
   }
 
+  // Check for edit mode
+  if (isEditMode === true) {
+    const itemToEdit = itemList.querySelector('.edit-mode');
+
+    removeItemFromStorage(itemToEdit.textContent);
+
+    itemToEdit.classList.remove('edit-mode');
+    itemToEdit.remove();
+    isEditMode = false;
+  }
+
   // Adding list items to the page as an individual element
   addItemToDOM(newItem);
   // Adding list items to the local storage (never add sensitive details to local storage)
   addItemToStorage(newItem);
 
   // Clear input
-  checkUI();
+  resetUI();
   input.value = '';
 };
 
@@ -134,7 +145,7 @@ const removeItem = (item) => {
     // Remove the item from local storage
     removeItemFromStorage(item.textContent);
 
-    checkUI();
+    resetUI();
   }
 };
 
@@ -165,7 +176,7 @@ const clearAll = () => {
   // Removes the specific list items from local storage
   localStorage.removeItem('items');
 
-  checkUI();
+  resetUI();
 };
 
 // Make the filter form functional:
@@ -185,7 +196,9 @@ const filterItems = (e) => {
 
 // Making the page more dynamic by hiding certain features when the list is unpopulated
 
-const checkUI = () => {
+const resetUI = () => {
+  input.value = '';
+
   const items = itemList.querySelectorAll('li'); // If left in the global scope, it is unchangable and unaffected by this function because i've set it as a constant variable.
   // console.log(items);
   if (items.length === 0) {
@@ -195,6 +208,11 @@ const checkUI = () => {
     clearButton.style.display = 'block';
     filter.style.display = 'block';
   }
+
+  formBtn.innerHTML = '<i class="fa-solid fa-plus"></i> Add Item';
+  formBtn.style.backgroundColor = '#333';
+
+  isEditMode = false;
 };
 
 // Initialize app - A neater alternative to having the event listeners in the global scope.
@@ -212,7 +230,7 @@ const init = () => {
 
   document.addEventListener('DOMContentLoaded', displayItems);
 
-  checkUI();
+  resetUI();
 };
 
 init();
